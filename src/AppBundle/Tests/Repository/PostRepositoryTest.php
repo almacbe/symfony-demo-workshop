@@ -4,9 +4,9 @@ namespace AppBundle\Tests\Repository;
 
 use AppBundle\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Liip\FunctionalTestBundle\Test\WebTestCase;
 
-class PostRepositoryTest extends KernelTestCase
+class PostRepositoryTest extends WebTestCase
 {
     /**
      * @var EntityManagerInterface
@@ -33,10 +33,30 @@ class PostRepositoryTest extends KernelTestCase
         /** @var PostRepository $repository */
         $repository = $this->em->getRepository('AppBundle:Post');
 
-        $month = new \DateTime('-1 month');
+        $month = new \DateTime('-5 month');
         $posts = $repository->findPublishOn($month);
 
         $this->assertEmpty($posts);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldGetPostOfTheGivenMonth()
+    {
+        $fixture = array(
+            'AppBundle\DataFixtures\ORM\LoadPosts'
+        );
+
+        $this->loadFixtures($fixture);
+
+        /** @var PostRepository $repository */
+        $repository = $this->em->getRepository('AppBundle:Post');
+
+        $month = new \DateTime('-1 month');
+        $posts = $repository->findPublishOn($month);
+
+        $this->assertCount(1, $posts);
     }
 
     protected function tearDown()
