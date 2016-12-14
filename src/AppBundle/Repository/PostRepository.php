@@ -56,4 +56,32 @@ class PostRepository extends EntityRepository
 
         return $paginator;
     }
+
+    public function findPublishOn(\DateTime $month)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery('
+                SELECT p
+                FROM AppBundle:Post p
+                WHERE p.publishedAt BETWEEN :firstDayOfMonth AND :lastDayOfMonth
+                ORDER BY p.publishedAt DESC
+            ');
+
+        $firstDayOfMonth = clone $month;
+        $firstDayOfMonth->modify('first day of this month');
+
+        $lastDayOfMonth = clone $month;
+        $lastDayOfMonth->modify('last day of this month');
+
+        $query->setParameters(
+            array(
+                'firstDayOfMonth' => $firstDayOfMonth,
+                'lastDayOfMonth' => $lastDayOfMonth,
+            )
+        );
+
+        $posts = $query->getResult();
+
+        return $posts;
+    }
 }
