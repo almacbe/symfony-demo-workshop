@@ -19,6 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -71,7 +72,18 @@ class BlogController extends Controller
      */
     public function commentNewAction(Request $request, Post $post)
     {
-        $form = $this->createForm('AppBundle\Form\CommentType');
+//        $form = $this->createForm('AppBundle\Form\CommentType');
+
+        $form = $this->get('form.factory')
+            ->createNamedBuilder(
+                'comment',
+                FormType::class,
+                null,
+                array('data_class' => Comment::class)
+            )
+            ->add('content')
+            ->getForm()
+        ;
 
         $form->handleRequest($request);
 
