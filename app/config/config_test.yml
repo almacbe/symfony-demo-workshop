@@ -30,4 +30,5 @@ security:
         secured_area:
             http_basic: ~
 
-liip_functional_test: ~
+liip_functional_test:
+    cache_sqlite_db: true

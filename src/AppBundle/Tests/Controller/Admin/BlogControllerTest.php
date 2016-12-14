@@ -11,7 +11,7 @@
 
 namespace AppBundle\Tests\Controller\Admin;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -31,6 +31,15 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class BlogControllerTest extends WebTestCase
 {
+    protected function setUp()
+    {
+        $fixture = array(
+            'AppBundle\DataFixtures\ORM\LoadFixtures'
+        );
+
+        $this->loadFixtures($fixture);
+    }
+
     public function testRegularUsersCannotAccessToTheBackend()
     {
         $client = static::createClient(array(), array(

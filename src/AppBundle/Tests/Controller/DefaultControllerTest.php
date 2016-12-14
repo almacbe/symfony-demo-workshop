@@ -11,7 +11,7 @@
 
 namespace AppBundle\Tests\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Liip\FunctionalTestBundle\Test\WebTestCase;
 
 /**
  * Functional test that implements a "smoke test" of all the public and secure
@@ -26,6 +26,15 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 class DefaultControllerTest extends WebTestCase
 {
+    protected function setUp()
+    {
+        $fixture = array(
+            'AppBundle\DataFixtures\ORM\LoadFixtures'
+        );
+
+        $this->loadFixtures($fixture);
+    }
+
     /**
      * PHPUnit's data providers allow to execute the same tests repeated times
      * using a different set of data each time.
