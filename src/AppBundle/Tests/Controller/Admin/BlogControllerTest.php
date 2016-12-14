@@ -79,4 +79,34 @@ class BlogControllerTest extends WebTestCase
             'The backend homepage displays all the available posts.'
         );
     }
+
+    /**
+     * @test
+     */
+    public function shouldEditAPost()
+    {
+        $postId = 1;
+
+        $credentials = array(
+            'username' => 'anna_admin',
+            'password' => 'kitten'
+        );
+
+        $client = $this->makeClient($credentials);
+
+        $url = $this->getUrl('admin_post_edit', array('id' => $postId));
+        $crawler = $client->request('GET', $url);
+        $this->assertStatusCode(200, $client);
+
+        $form = $crawler->selectButton('Save changes')->form();
+        $crawler = $client->submit($form);
+
+        $form->setValues(
+            array(
+                'post[title]' => 'title molon',
+            )
+        );
+        $client->submit($form);
+        $this->assertStatusCode(302, $client);
+    }
 }
