@@ -147,4 +147,42 @@ class BlogControllerTest extends WebTestCase
         $this->assertContains('Post created successfully!', $content);
         $this->assertContains('title molon', $content);
     }
+
+    /**
+     * @test
+     */
+    public function shouldCreateAComment()
+    {
+        $credentials = array(
+            'username' => 'anna_admin',
+            'password' => 'kitten'
+        );
+
+        $client = $this->makeClient($credentials);
+
+        $post = $this->getContainer()->get('doctrine')->getRepository('AppBundle:Post')->find(1);
+
+        $url = $this->getUrl('blog_post', array('slug' => $post->getSlug()));
+        $crawler = $client->request('GET', $url);
+        $this->assertStatusCode(200, $client);
+
+        $form = $crawler->selectButton('Publish comment')->form();
+        $crawler = $client->submit($form);
+
+        $form->setValues(
+            array(
+                'comment[content]' => 'comentario muy molon',
+            )
+        );
+
+        $client->submit($form);
+        $this->assertStatusCode(302, $client);
+        $client->followRedirect();
+
+        $response = $client->getResponse();
+        $this->isSuccessful($response);
+
+        $content = $response->getContent();
+        $this->assertContains('comentario muy molon', $content);
+    }
 }
