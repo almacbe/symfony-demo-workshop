@@ -109,4 +109,42 @@ class BlogControllerTest extends WebTestCase
         $client->submit($form);
         $this->assertStatusCode(302, $client);
     }
+
+    /**
+     * @test
+     */
+    public function shouldCreateAPost()
+    {
+        $credentials = array(
+            'username' => 'anna_admin',
+            'password' => 'kitten'
+        );
+
+        $client = $this->makeClient($credentials);
+
+        $url = $this->getUrl('admin_post_new');
+        $crawler = $client->request('GET', $url);
+        $this->assertStatusCode(200, $client);
+
+        $form = $crawler->selectButton('Create post')->form();
+        $crawler = $client->submit($form);
+
+        $form->setValues(
+            array(
+                'post[title]' => 'title molon',
+                'post[summary]' => 'summary mega molon',
+                'post[content]' => 'ultra mega molon content',
+            )
+        );
+
+        $client->submit($form);
+        $client->followRedirect();
+
+        $response = $client->getResponse();
+        $this->isSuccessful($response);
+
+        $content = $response->getContent();
+        $this->assertContains('Post created successfully!', $content);
+        $this->assertContains('title molon', $content);
+    }
 }
