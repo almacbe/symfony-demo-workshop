@@ -11,8 +11,8 @@
 
 namespace AppBundle\Tests\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use AppBundle\Entity\Post;
+use Liip\FunctionalTestBundle\Test\WebTestCase;
 
 /**
  * Functional test for the controllers defined inside BlogController.
@@ -36,5 +36,19 @@ class BlogControllerTest extends WebTestCase
             $crawler->filter('article.post'),
             'The homepage displays the right number of posts.'
         );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSee5Comments()
+    {
+        $content = $this->fetchContent('/en/blog/posts/lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit');
+
+        $this->assertContains('5 comments', $content);
+
+        $crawler = $this->fetchCrawler('/en/blog/posts/lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit');
+
+        $this->assertEquals(5, $crawler->filter('.post-comment')->count());
     }
 }
