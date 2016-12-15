@@ -151,6 +151,40 @@ class BlogControllerTest extends WebTestCase
     /**
      * @test
      */
+    public function shouldCreateAPostAndGoToEditPage()
+    {
+        $credentials = array(
+            'username' => 'anna_admin',
+            'password' => 'kitten'
+        );
+
+        $client = $this->makeClient($credentials);
+
+        $url = $this->getUrl('admin_post_new');
+        $crawler = $client->request('GET', $url);
+        $this->assertStatusCode(200, $client);
+
+        $form = $crawler->selectButton('Save and edit')->form();
+        $crawler = $client->submit($form);
+
+        $form->setValues(
+            array(
+                'post[title]' => 'title molon',
+                'post[summary]' => 'summary mega molon',
+                'post[content]' => 'ultra mega molon content',
+            )
+        );
+
+        $client->submit($form);
+        $this->assertStatusCode(302, $client);
+        $response = $client->getResponse();
+
+        $this->assertRegExp('/\/en\/admin\/post\/([0-9])*\/edit/', $response->getContent());
+    }
+
+    /**
+     * @test
+     */
     public function shouldCreateAComment()
     {
         $credentials = array(

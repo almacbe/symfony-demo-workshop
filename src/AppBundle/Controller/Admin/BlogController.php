@@ -74,7 +74,8 @@ class BlogController extends Controller
 
         // See http://symfony.com/doc/current/book/forms.html#submitting-forms-with-multiple-buttons
         $form = $this->createForm('AppBundle\Form\PostType', $post)
-            ->add('saveAndCreateNew', 'Symfony\Component\Form\Extension\Core\Type\SubmitType');
+            ->add('saveAndCreateNew', 'Symfony\Component\Form\Extension\Core\Type\SubmitType')
+            ->add('saveAndEdit', 'Symfony\Component\Form\Extension\Core\Type\SubmitType');
 
         $form->handleRequest($request);
 
@@ -97,6 +98,17 @@ class BlogController extends Controller
 
             if ($form->get('saveAndCreateNew')->isClicked()) {
                 return $this->redirectToRoute('admin_post_new');
+            }
+
+            if ($form->get('saveAndEdit')->isClicked()) {
+                $redirectResponse = $this->redirectToRoute(
+                    'admin_post_edit',
+                    array(
+                        'id' => $post->getId()
+                    )
+                );
+
+                return $redirectResponse;
             }
 
             return $this->redirectToRoute('admin_post_index');
