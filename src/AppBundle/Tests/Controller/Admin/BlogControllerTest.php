@@ -219,4 +219,38 @@ class BlogControllerTest extends WebTestCase
         $content = $response->getContent();
         $this->assertContains('comentario muy molon', $content);
     }
+
+    /**
+     * @test
+     */
+    public function shouldGetErrorNoContentWhenCreateAPost()
+    {
+        $credentials = array(
+            'username' => 'anna_admin',
+            'password' => 'kitten'
+        );
+
+        $client = $this->makeClient($credentials);
+
+        $url = $this->getUrl('admin_post_new');
+        $crawler = $client->request('GET', $url);
+        $this->assertStatusCode(200, $client);
+
+        $form = $crawler->selectButton('Create post')->form();
+        $crawler = $client->submit($form);
+
+        $form->setValues(
+            array(
+                'post[title]' => 'title molon',
+                'post[summary]' => 'summary mega molon',
+            )
+        );
+
+        $client->submit($form);
+
+        $response = $client->getResponse();
+        $this->isSuccessful($response);
+
+        $this->assertContains('Your post should have some content!', $response->getContent());
+    }
 }
