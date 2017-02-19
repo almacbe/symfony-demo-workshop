@@ -29,6 +29,10 @@ class MaintenanceListener
             return;
         }
 
+        if (!$this->enabled) {
+            return;
+        }
+
         $response = new Response('Estamos en mantenimiento');
 
         $event->setResponse($response);
